@@ -4,8 +4,74 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "077ade88701e074e7ffa2d01e7e45a3c",
+    "content-hash": "30f02688bd76bdfa734693efe02ae414",
     "packages": [
+        {
+            "name": "104corp/crypt",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:104corp/104-php-crypt.git",
+                "reference": "8460e3e7daf81e7cb6e95f26a3f2c3e39cbaf42d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/104corp/104-php-crypt/zipball/8460e3e7daf81e7cb6e95f26a3f2c3e39cbaf42d",
+                "reference": "8460e3e7daf81e7cb6e95f26a3f2c3e39cbaf42d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.1 | ^8.0",
+                "psr/http-client": "^1.0",
+                "psr/http-factory": "^1.0",
+                "psr/http-message": "^1.0"
+            },
+            "conflict": {
+                "104corp/common": "*"
+            },
+            "require-dev": {
+                "illuminate/contracts": "^5.6 | ^6 | ^7 | ^8",
+                "laminas/laminas-diactoros": "^2.2",
+                "mileschou/psr": "^1.1",
+                "phpunit/phpunit": "^7.5 | ^8 | ^9",
+                "squizlabs/php_codesniffer": "^3.5",
+                "symfony/console": "^4 | ^5",
+                "symfony/http-client": "^4.4 | ^5"
+            },
+            "suggest": {
+                "laminas/laminas-diactoros": "Require ^2 if need use PSR-17 HTTP factory",
+                "symfony/http-client": "Require ^4.4 | ^5 if need use PSR-18 HTTP client"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Corp104\\Common\\Crypt\\": "src/Crypt"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Corp104\\Console\\": "app",
+                    "Tests\\": "tests"
+                }
+            },
+            "license": [
+                "104 Corporation. All rights reserved."
+            ],
+            "authors": [
+                {
+                    "name": "Miles Chou",
+                    "email": "miles.chou@104.com.tw"
+                }
+            ],
+            "description": "Crypt library",
+            "homepage": "https://github.com/104corp/104-php-crypt",
+            "support": {
+                "issues": "https://github.com/104corp/104-php-crypt/issues",
+                "source": "https://github.com/104corp/104-php-crypt/tree/v1.0.2"
+            },
+            "time": "2021-06-23T05:36:26+00:00"
+        },
         {
             "name": "asm89/stack-cors",
             "version": "v2.0.3",
