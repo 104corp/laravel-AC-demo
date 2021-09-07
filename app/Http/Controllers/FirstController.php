@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Service\ACAdapter;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-use Corp104\Common\Crypt\Encrypter;
-use Corp104\Common\Crypt\Drivers\WebService;
-use Laminas\Diactoros\RequestFactory;
-use Laminas\Diactoros\StreamFactory;
 
 class FirstController extends Controller
 {
+    protected $acAdapter;
+
+    public function __construct(ACAdapter $acAdapter) {
+        $this->acAdapter = $acAdapter;
+    }
+
     /**
      * First web
      */
@@ -29,21 +32,26 @@ class FirstController extends Controller
         return $result->getBody()->getContents();
     }
 
-    public function enc() {
-      $driver = new WebService(
-        new Client(),
-        new RequestFactory(),
-        new StreamFactory(),
-        env('AES_ENDPOINT'),
-        env('AES_TOKEN')
-      );
-      $encrypter = new Encrypter($driver);
+    public function login() {
+      if (!@$_COOKIE['ssoTokenId']) {
+        // 沒有登入cookie記錄，重新登入
+        $resp = $this->acAdapter->login("benjamin.chang@104.com.tw", "123qwe");
 
-      // 加密
-      $encryptObj = $encrypter->encrypt(["benjamin.chang@104.com.tw", "123qwe"]);
-      setCookie("email", $encryptObj[0]);
-      setCookie("passwd", $encryptObj[1]);
+        if ($resp['success'] == 'true') {
+          // 成功登入
+          setCookie("ssoTokenId", $resp['data']['ssoTokenId']);
+          echo '<script>alert("登入成功！")</script>';
+        } else {
+          echo '<script>alert("登入失敗！")</script>';
+        }
 
-      return $encryptObj;
+        echo json_encode($resp);
+      } else {
+        // 有登入cookie記錄，確認是否仍有效
+        echo '<script>alert("已有cookie存在！")</script>';
+        $this->acAdapter->checkLogin($_COOKIE['ssoTokenId']);
+
+        echo $_COOKIE['ssoTokenId'];
+      }
     }
 }
