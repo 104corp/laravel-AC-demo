@@ -30,7 +30,7 @@ class FirstController extends Controller
         return $result->getBody()->getContents();
     }
 
-    public function en() {
+    public function enc() {
       $driver = new WebService(
         new Client(),
         new RequestFactory(),

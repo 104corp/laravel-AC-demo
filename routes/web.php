@@ -18,4 +18,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/enc', 'FirstController@en')->name('en');
+Route::get('/enc', 'FirstController@enc')->name('enc');
