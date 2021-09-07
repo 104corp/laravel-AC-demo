@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-use Corp104\Common\Crypt\Drivers\Wrapper;
 use Corp104\Common\Crypt\Encrypter;
+use Corp104\Common\Crypt\Drivers\WebService;
+use Laminas\Diactoros\RequestFactory;
+use Laminas\Diactoros\StreamFactory;
 
 class FirstController extends Controller
 {
@@ -29,8 +31,16 @@ class FirstController extends Controller
     }
 
     public function en() {
-      $encrypter = new Encrypter(new Wrapper('/path/to/gary-aes-wrapper.php'));
-      
-      return $encrypter->encrypt(['a' => 'foo', 'b' => 'bar']);
+      $driver = new WebService(
+        new Client(),
+        new RequestFactory(),
+        new StreamFactory(),
+        env('AES_ENDPOINT'),
+        env('AES_TOKEN')
+      );
+
+      // 加密
+      $encryptArray = $driver->encryptArray(["benjamin.chang@104.com.tw", "123qwe"]);
+      return $encryptArray;
     }
 }
