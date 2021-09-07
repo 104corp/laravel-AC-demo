@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Corp104\Common\Crypt\Encrypter;
@@ -38,9 +37,13 @@ class FirstController extends Controller
         env('AES_ENDPOINT'),
         env('AES_TOKEN')
       );
+      $encrypter = new Encrypter($driver);
 
       // 加密
-      $encryptArray = $driver->encryptArray(["benjamin.chang@104.com.tw", "123qwe"]);
-      return $encryptArray;
+      $encryptObj = $encrypter->encrypt(["benjamin.chang@104.com.tw", "123qwe"]);
+      setCookie("email", $encryptObj[0]);
+      setCookie("passwd", $encryptObj[1]);
+
+      return $encryptObj;
     }
 }
