@@ -14,10 +14,6 @@ use App\Http\Controllers\FirstController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::get('/login', function () {
   return view('loginForm');
 });
