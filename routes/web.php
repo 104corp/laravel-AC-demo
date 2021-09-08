@@ -18,4 +18,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/enc', 'FirstController@enc')->name('enc');
+Route::get('/login', function () {
+  return view('loginForm');
+});
+
+Route::post('/login', 'FirstController@login');
+
+Route::get('/watch', 'FirstController@watch');

@@ -32,26 +32,37 @@ class FirstController extends Controller
         return $result->getBody()->getContents();
     }
 
-    public function login() {
+    public function login(Request $request) {
+      $resp = $this->acAdapter->login($request->email, $request->passwd);
+
+      if ($resp['success'] == 'true') {
+        setCookie("ssoTokenId", $resp['data']['ssoTokenId']);
+        echo '<script>alert("登入成功！")</script>';
+        return redirect('/watch');
+      } else {
+        echo '<script>alert("登入失敗！")</script>';
+        return redirect('/login');
+      }
+    }
+
+    public function watch() {
       if (!@$_COOKIE['ssoTokenId']) {
         // 沒有登入cookie記錄，重新登入
-        $resp = $this->acAdapter->login("benjamin.chang@104.com.tw", "123qwe");
-
-        if ($resp['success'] == 'true') {
-          // 成功登入
-          setCookie("ssoTokenId", $resp['data']['ssoTokenId']);
-          echo '<script>alert("登入成功！")</script>';
-        } else {
-          echo '<script>alert("登入失敗！")</script>';
-        }
-
-        echo json_encode($resp);
+        echo '<script>alert("尚未登入！")</script>';
+        return redirect('/login');
       } else {
         // 有登入cookie記錄，確認是否仍有效
         echo '<script>alert("已有cookie存在！")</script>';
-        $this->acAdapter->checkLogin($_COOKIE['ssoTokenId']);
+        $resp = $this->acAdapter->checkLogin($_COOKIE['ssoTokenId']);
 
-        echo $_COOKIE['ssoTokenId'];
+        if ($resp['success'] == 'true') {
+          $pid = $resp['data']['Pid'];
+
+          return $this->acAdapter->getACInfo($pid);
+        } else {
+          echo '<script>alert("登入已過期！")</script>';
+          return redirect('/login');
+        }
       }
     }
 }
