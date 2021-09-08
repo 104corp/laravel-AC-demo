@@ -10,8 +10,8 @@ use GuzzleHttp\Client;
 class FirstController extends Controller {
   protected $acAdapter;
 
-  public function __construct(ACAdapter $acAdapter) {
-    $this->acAdapter = $acAdapter;
+  public function __construct() {
+    $this->acAdapter = new ACAdapter();
   }
 
   public function login(Request $request) {
@@ -34,7 +34,6 @@ class FirstController extends Controller {
       return redirect('/login');
     } else {
       // 有登入cookie記錄，確認是否仍有效
-      echo '<script>alert("已有cookie存在！")</script>';
       $resp = $this->acAdapter->checkLogin($_COOKIE['ssoTokenId']);
 
       if ($resp['success'] == 'true') {

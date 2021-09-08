@@ -10,9 +10,12 @@ use Laminas\Diactoros\StreamFactory;
 
 class ACAdapter {
 
-  public function login($email, $passwd) {
-    $endPoint = env('AC_ENDPOINT');
-    $url = $endPoint.'/ac/login';
+  protected $encrypter;
+
+  protected $endPoint;
+
+  public function __construct() {
+    $this->endPoint = env('AC_ENDPOINT');
 
     $driver = new WebService(
       new Client(),
@@ -21,10 +24,14 @@ class ACAdapter {
       env('AES_ENDPOINT'),
       env('AES_TOKEN')
     );
-    $encrypter = new Encrypter($driver);
+    $this->encrypter = new Encrypter($driver);
+  }
+
+  public function login($email, $passwd) {
+    $url = $this->endPoint.'/ac/login';
 
     // 加密
-    $encryptObj = $encrypter->encrypt([$email, $passwd]);
+    $encryptObj = $this->encrypter->encrypt([$email, $passwd]);
     $encEmail = $encryptObj[0];
     $encPasswd = $encryptObj[1];
 
@@ -56,36 +63,25 @@ class ACAdapter {
 
   public function getACInfo($pid) {
     // 含解密
-    $endPoint = env('AC_ENDPOINT');
-    $url = "{$endPoint}/ac/getAccount/{$pid}";
+    $url = "{$this->endPoint}/ac/getAccount/{$pid}";
 
     $client = new Client();
     $response = $client->request('GET', $url);
 
     $obj = json_decode($response->getBody()->getContents(), true);
 
-    $driver = new WebService(
-      new Client(),
-      new RequestFactory(),
-      new StreamFactory(),
-      env('AES_ENDPOINT'),
-      env('AES_TOKEN')
-    );
-    $encrypter = new Encrypter($driver);
-
-    $obj['data']['firstName'] = $encrypter->decrypt($obj['data']['firstName']);
-    $obj['data']['tel'] = $encrypter->decrypt($obj['data']['tel']);
-    $obj['data']['cellphone'] = $encrypter->decrypt($obj['data']['cellphone']);
-    $obj['data']['address'] = $encrypter->decrypt($obj['data']['address']);
-    $obj['data']['identity'] = $encrypter->decrypt($obj['data']['identity']);
-    for ($i = 0;$i < count($obj['data']['email']); $i++) {
-      $obj['data']['email'][$i]['email'] = $encrypter->decrypt($obj['data']['email'][$i]['email']);
+    $obj['data']['firstName'] = $this->encrypter->decrypt($obj['data']['firstName']);
+    $obj['data']['tel'] = $this->encrypter->decrypt($obj['data']['tel']);
+    $obj['data']['cellphone'] = $this->encrypter->decrypt($obj['data']['cellphone']);
+    $obj['data']['address'] = $this->encrypter->decrypt($obj['data']['address']);
+    $obj['data']['identity'] = $this->encrypter->decrypt($obj['data']['identity']);
+    for ($i = 0; $i < count($obj['data']['email']); $i++) {
+      $obj['data']['email'][$i]['email'] = $this->encrypter->decrypt($obj['data']['email'][$i]['email']);
     }
     return json_encode($obj['data']);
   }
 
   public function logout($ssoTokenId) {
-    $endPoint = env('AC_ENDPOINT');
 
     return true;
   }
