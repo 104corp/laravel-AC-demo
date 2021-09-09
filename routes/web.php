@@ -18,6 +18,6 @@ Route::get('/login', function () {
   return view('loginForm');
 });
 
-Route::post('/login', 'FirstController@login');
+Route::post('/login', [FirstController::class, 'index']);
 
-Route::get('/watch', 'FirstController@watch');
+Route::get('/watch', [FirstController::class, 'watch']);
